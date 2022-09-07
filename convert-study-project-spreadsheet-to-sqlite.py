@@ -17,6 +17,7 @@ reviewer_name	 TEXT,
 authors	 TEXT,
 journal_or_source	 TEXT,
 date_publication	 TEXT,
+date_publication_year	 INTEGER,
 doi	 TEXT,
 url	 TEXT,
 issn	 TEXT,
@@ -103,9 +104,9 @@ for row in range(3, worksheet.max_row + 1):
         last_study_id = study_id
         cursor.execute(
             """INSERT INTO study (
-                covidence_number	,study_id ,title	,reviewer_name	,authors	 ,journal_or_source	,date_publication,doi	 ,url	,
+                covidence_number	,study_id ,title	,reviewer_name	,authors	 ,journal_or_source	,date_publication,date_publication_year,doi	 ,url	,
                 issn,study_design_description,study_design	,initial_research_quality_appraisal	,language	,non_qualitative_casp , more_than_one_social_outcomes_contract, source_spreadsheet_row  
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
             [
                 int(worksheet['A' + str(row)].value),
                 worksheet['B' + str(row)].value,
@@ -113,7 +114,8 @@ for row in range(3, worksheet.max_row + 1):
                 worksheet['D' + str(row)].value,
                 worksheet['F' + str(row)].value,
                 worksheet['G' + str(row)].value,
-                worksheet['H' + str(row)].value,
+                worksheet['H' + str(row)].value if worksheet['H' + str(row)].value != 'n.d.' else None,
+                str(worksheet['H' + str(row)].value)[0:4] if worksheet['H' + str(row)].value and worksheet['H' + str(row)].value != 'n.d.' else None,
                 worksheet['I' + str(row)].value,
                 worksheet['J' + str(row)].value,
                 worksheet['K' + str(row)].value,
