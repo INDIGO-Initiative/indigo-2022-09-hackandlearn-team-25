@@ -128,14 +128,15 @@ for row in range(3, worksheet.max_row + 1):
         )
 
     if worksheet['R' + str(row)].value or worksheet['S' + str(row)].value:
-        study_name = worksheet['R' + str(row)].value,
-        if isinstance(study_name, tuple):
-            study_name = study_name[0]
-        if not study_name:
-            study_name = "ANON STUDY ROW " + str(row)
+        contract_name = worksheet['R' + str(row)].value,
+        if isinstance(contract_name, tuple):
+            contract_name = contract_name[0]
+        if not contract_name or contract_name == 'N/A':
+            contract_name = "ANON STUDY ROW " + str(row)
+        # print(str(study_id) + ", "+str(contract_name))
         insert_data = [
                 study_id,
-                study_name,
+                contract_name,
                 worksheet['S' + str(row)].value,
                 worksheet['T' + str(row)].value,
                 worksheet['U' + str(row)].value,
