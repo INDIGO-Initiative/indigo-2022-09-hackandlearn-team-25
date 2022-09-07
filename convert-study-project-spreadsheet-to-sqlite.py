@@ -120,7 +120,7 @@ for row in range(3, worksheet.max_row + 1):
                 worksheet['J' + str(row)].value,
                 worksheet['K' + str(row)].value,
                 worksheet['L' + str(row)].value,
-                worksheet['M' + str(row)].value,
+                worksheet['M' + str(row)].value.strip() if worksheet['M' + str(row)].value else None,
                 worksheet['N' + str(row)].value,
                 worksheet['O' + str(row)].value,
                 worksheet['P' + str(row)].value,
