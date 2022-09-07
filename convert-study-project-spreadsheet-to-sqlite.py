@@ -14,7 +14,6 @@ covidence_number	INTEGER,
 study_id  TEXT PRIMARY KEY,	
 title	 TEXT,
 reviewer_name	 TEXT,
-title_alt	 TEXT,
 authors	 TEXT,
 journal_or_source	 TEXT,
 date_publication	 TEXT,
@@ -26,7 +25,8 @@ study_design	 TEXT,
 initial_research_quality_appraisal	 TEXT,
 language	 TEXT,
 non_qualitative_casp  TEXT,
-more_than_one_social_outcomes_contract  TEXT
+more_than_one_social_outcomes_contract  TEXT,
+source_spreadsheet_row INTEGER
 )""")
 
 
@@ -84,7 +84,8 @@ reports_changes_in_provider_performance_or_culture	 TEXT,
 reports_changes_in_provider_performance_or_culture_details TEXT,
 reports_long_term_sustainment_and_legacy_effects 	 TEXT,
 reports_long_term_sustainment_and_legacy_effects_details TEXT,
-review_beneficial TEXT
+review_beneficial TEXT,
+source_spreadsheet_row INTEGER
 
 )
 """)
@@ -102,15 +103,14 @@ for row in range(3, worksheet.max_row + 1):
         last_study_id = study_id
         cursor.execute(
             """INSERT INTO study (
-                covidence_number	,study_id ,title	,reviewer_name	,title_alt	,authors	 ,journal_or_source	,date_publication,doi	 ,url	,
-                issn,study_design_description,study_design	,initial_research_quality_appraisal	,language	,non_qualitative_casp , more_than_one_social_outcomes_contract  
+                covidence_number	,study_id ,title	,reviewer_name	,authors	 ,journal_or_source	,date_publication,doi	 ,url	,
+                issn,study_design_description,study_design	,initial_research_quality_appraisal	,language	,non_qualitative_casp , more_than_one_social_outcomes_contract, source_spreadsheet_row  
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
             [
                 int(worksheet['A' + str(row)].value),
                 worksheet['B' + str(row)].value,
                 worksheet['C' + str(row)].value,
                 worksheet['D' + str(row)].value,
-                worksheet['E' + str(row)].value,
                 worksheet['F' + str(row)].value,
                 worksheet['G' + str(row)].value,
                 worksheet['H' + str(row)].value,
@@ -123,6 +123,7 @@ for row in range(3, worksheet.max_row + 1):
                 worksheet['O' + str(row)].value,
                 worksheet['P' + str(row)].value,
                 worksheet['Q' + str(row)].value,
+                row
             ],
         )
 
@@ -186,6 +187,7 @@ for row in range(3, worksheet.max_row + 1):
                 worksheet['BO' + str(row)].value,
                 worksheet['BP' + str(row)].value,
                 worksheet['BQ' + str(row)].value,
+                row
             ]
         #print("STUDY===============================================================================================")
         #[print(i) for i in insert_data]
@@ -211,14 +213,14 @@ for row in range(3, worksheet.max_row + 1):
                 reports_ecosystem_or_system_strengthening_effects	 ,reports_ecosystem_or_system_strengthening_effects_details ,
                 reports_changes_in_provider_performance_or_culture	 ,reports_changes_in_provider_performance_or_culture_details ,
                 reports_long_term_sustainment_and_legacy_effects 	 ,reports_long_term_sustainment_and_legacy_effects_details ,
-                review_beneficial 
+                review_beneficial , source_spreadsheet_row
             ) VALUES (
                 ?,?,?,?,?,?,?,?,?,?,
                 ?,?,?,?,?,?,?,?,?,?,
                 ?,?,?,?,?,?,?,?,?,?,
                 ?,?,?,?,?,?,?,?,?,?,
                 ?,?,?,?,?,?,?,?,?,?,
-                ?,?,?
+                ?,?,?,?
             )""",
             insert_data)
 
