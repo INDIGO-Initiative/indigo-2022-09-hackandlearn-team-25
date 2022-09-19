@@ -30,7 +30,7 @@ app.layout = html.Div(children=[
     Input(component_id='study-year-max-input', component_property='value'),
 )
 def update_study_design_graph(study_year_min, study_year_max):
-    connection = sqlite3.connect('research-projects-database.sqlite')
+    connection = sqlite3.connect('data/research-projects-database.sqlite')
     df = pd.read_sql_query(
         "SELECT study_design, count(*) AS c FROM study WHERE study_design IS NOT NULL AND date_publication_year >= ? AND date_publication_year <= ? GROUP BY study_design",
         connection,

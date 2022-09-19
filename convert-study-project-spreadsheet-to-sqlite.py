@@ -3,7 +3,7 @@ import sqlite3
 import openpyxl
 
 
-connection = sqlite3.connect('research-projects-database.sqlite')
+connection = sqlite3.connect('data/research-projects-database.sqlite')
 connection.row_factory = sqlite3.Row
 cursor = connection.cursor()
 
@@ -92,7 +92,7 @@ source_spreadsheet_row INTEGER
 """)
 
 
-workbook = openpyxl.load_workbook('research-projects-spreadsheet.xlsx')
+workbook = openpyxl.load_workbook('data/research-projects-spreadsheet.xlsx')
 worksheet = workbook['Sheet1']
 
 
