@@ -7,6 +7,7 @@ import sqlite3
 
 
 app = Dash(__name__)
+server = app.server
 
 app.layout = html.Div(children=[
     html.H1(children='Data Dashboard'),
