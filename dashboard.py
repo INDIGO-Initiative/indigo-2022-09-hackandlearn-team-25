@@ -40,6 +40,7 @@ def update_study_design_graph(study_year_min, study_year_max):
         ]
     )
     fig = px.bar(df, x="study_design", y="c")
+    connection.close()
     return fig
 
 if __name__ == '__main__':
