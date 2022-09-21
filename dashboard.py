@@ -1,5 +1,3 @@
-# pip install dash pandas
-
 import dash
 from dash import Dash, html, dcc, Input, Output
 
