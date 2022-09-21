@@ -1,48 +1,29 @@
 # pip install dash pandas
 
+import dash
 from dash import Dash, html, dcc, Input, Output
-import plotly.express as px
-import pandas as pd
-import sqlite3
 
 
-app = Dash(__name__)
+app = Dash(__name__, use_pages=True)
 server = app.server
 
 app.layout = html.Div(children=[
     html.H1(children='Data Dashboard'),
-    html.Div([
-        "Year: ",
-        dcc.Input(id='study-year-min-input', value='2010', type='number'),
-        " to ",
-        dcc.Input(id='study-year-max-input', value='2023', type='number'),
-        " (inclusive)",
-    ]),
-    dcc.Graph(
-        id='study-design-graph',
-    )
+
+    html.Div(
+        [
+            html.Div(
+                dcc.Link(
+                    f"{page['name']}", href=page["relative_path"]
+                )
+            )
+            for page in dash.page_registry.values()
+        ]
+    ),
+
+	dash.page_container
 ])
 
-
-
-@app.callback(
-    Output(component_id='study-design-graph', component_property='figure'),
-    Input(component_id='study-year-min-input', component_property='value'),
-    Input(component_id='study-year-max-input', component_property='value'),
-)
-def update_study_design_graph(study_year_min, study_year_max):
-    connection = sqlite3.connect('data/research-projects-database.sqlite')
-    df = pd.read_sql_query(
-        "SELECT study_design, count(*) AS c FROM study WHERE study_design IS NOT NULL AND date_publication_year >= ? AND date_publication_year <= ? GROUP BY study_design",
-        connection,
-        params = [
-            study_year_min,
-            study_year_max
-        ]
-    )
-    fig = px.bar(df, x="study_design", y="c")
-    connection.close()
-    return fig
 
 if __name__ == '__main__':
     app.run_server(debug=True)

@@ -6,6 +6,7 @@ WORKDIR /app
 
 COPY requirements.txt .
 COPY dashboard.py .
+COPY pages pages/
 
 RUN pip install -r requirements.txt
 
