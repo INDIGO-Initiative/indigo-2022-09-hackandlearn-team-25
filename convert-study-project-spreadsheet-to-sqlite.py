@@ -1,6 +1,23 @@
 
 import sqlite3
 import openpyxl
+import csv
+from difflib import SequenceMatcher
+
+
+INDIGO_PROJECT_NAME_MATCHING_THRESHOLD = 0.5
+
+###################################################################### Load INDIGO projects
+
+indigo_projects = {}
+with open('data/projects.csv') as csvfile:
+    csvreader = csv.reader(csvfile)
+    next(csvreader)
+    for row in csvreader:
+       indigo_projects[row[0]] = row[1]
+
+
+###################################################################### Create database
 
 
 connection = sqlite3.connect('data/research-projects-database.sqlite')
@@ -86,11 +103,14 @@ reports_changes_in_provider_performance_or_culture_details TEXT,
 reports_long_term_sustainment_and_legacy_effects 	 TEXT,
 reports_long_term_sustainment_and_legacy_effects_details TEXT,
 review_beneficial TEXT,
-source_spreadsheet_row INTEGER
-
+source_spreadsheet_row INTEGER,
+possible_indigo_project_id TEXT,
+possible_indigo_project_title TEXT,
+possible_indigo_project_confidence REAL
 )
 """)
 
+###################################################################### Open Spreadsheet and insert into database
 
 workbook = openpyxl.load_workbook('data/research-projects-spreadsheet.xlsx')
 worksheet = workbook['Sheet1']
@@ -136,6 +156,10 @@ for row in range(3, worksheet.max_row + 1):
         if not contract_name or contract_name == 'N/A':
             contract_name = "ANON STUDY ROW " + str(row)
         # print(str(study_id) + ", "+str(contract_name))
+
+        indigo_projects_for_study = [(k, SequenceMatcher(None, title, contract_name).ratio()) for k, title in indigo_projects.items() ]
+        indigo_projects_for_study.sort(key=lambda i: i[1])
+        possible_indigo_project_for_study = indigo_projects_for_study.pop()
         insert_data = [
                 study_id,
                 contract_name,
@@ -190,7 +214,10 @@ for row in range(3, worksheet.max_row + 1):
                 worksheet['BO' + str(row)].value,
                 worksheet['BP' + str(row)].value,
                 worksheet['BQ' + str(row)].value,
-                row
+                row,
+                possible_indigo_project_for_study[0] if possible_indigo_project_for_study[1] > INDIGO_PROJECT_NAME_MATCHING_THRESHOLD else None,
+                indigo_projects[possible_indigo_project_for_study[0]] if possible_indigo_project_for_study[1] > INDIGO_PROJECT_NAME_MATCHING_THRESHOLD else None,
+                possible_indigo_project_for_study[1] if possible_indigo_project_for_study[1] > INDIGO_PROJECT_NAME_MATCHING_THRESHOLD else None,
             ]
         #print("STUDY===============================================================================================")
         #[print(i) for i in insert_data]
@@ -216,14 +243,15 @@ for row in range(3, worksheet.max_row + 1):
                 reports_ecosystem_or_system_strengthening_effects	 ,reports_ecosystem_or_system_strengthening_effects_details ,
                 reports_changes_in_provider_performance_or_culture	 ,reports_changes_in_provider_performance_or_culture_details ,
                 reports_long_term_sustainment_and_legacy_effects 	 ,reports_long_term_sustainment_and_legacy_effects_details ,
-                review_beneficial , source_spreadsheet_row
+                review_beneficial , source_spreadsheet_row,
+                possible_indigo_project_id, possible_indigo_project_title, possible_indigo_project_confidence
             ) VALUES (
                 ?,?,?,?,?,?,?,?,?,?,
                 ?,?,?,?,?,?,?,?,?,?,
                 ?,?,?,?,?,?,?,?,?,?,
                 ?,?,?,?,?,?,?,?,?,?,
                 ?,?,?,?,?,?,?,?,?,?,
-                ?,?,?,?
+                ?,?,?,?,?,?,?
             )""",
             insert_data)
 

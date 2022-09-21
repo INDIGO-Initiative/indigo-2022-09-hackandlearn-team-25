@@ -46,3 +46,17 @@ To clean up:
 dokku apps:destroy golabteam26
 rm -rf /var/lib/dokku/data/storage/golabteam26
 ```
+
+## Get spreadsheet of project matches
+
+```
+sqlite> .mode csv
+sqlite> .output test.csv
+sqlite> .headers on
+sqlite> select 
+   ...> study.covidence_number, study.study_id, study.title as study_title,
+   ...> social_outcomes_contract.name AS soc_name , social_outcomes_contract.possible_indigo_project_id, social_outcomes_contract.possible_indigo_project_title, social_outcomes_contract.possible_indigo_project_confidence 
+   ...> from social_outcomes_contract 
+   ...> join study on study.study_id = social_outcomes_contract.study_id
+   ...> where possible_indigo_project_id is not null;
+```
