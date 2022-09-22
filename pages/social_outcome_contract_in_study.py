@@ -14,18 +14,22 @@ layout = html.Div(children=[
     dcc.Graph(
         id='report1'
     ),
+    html.Div(id='report1total'),
     html.H2(children='Costs and resources'),
     dcc.Graph(
         id='report2'
     ),
+    html.Div(id='report2total'),
     html.H2(children='Ecosystem/System strengthening effects'),
     dcc.Graph(
         id='report3'
     ),
+    html.Div(id='report3total'),
     html.H2(children='Scalability and Sustainability of SOC'),
     dcc.Graph(
         id='report4'
     ),
+    html.Div(id='report4total'),
     dcc.Interval(
         id="load_interval",
         n_intervals=0,
@@ -34,6 +38,28 @@ layout = html.Div(children=[
     ),
 ])
 
+
+
+@callback(
+    Output(component_id='report1total', component_property='children'),
+    Output(component_id='report2total', component_property='children'),
+    Output(component_id='report3total', component_property='children'),
+    Output(component_id='report4total', component_property='children'),
+    Input(component_id="load_interval", component_property="n_intervals"),
+)
+def reporttotal(load_interval):
+    connection = sqlite3.connect('data/research-projects-database.sqlite')
+    with closing(connection.cursor()) as cursor:
+
+            cursor.execute(
+                "SELECT count(*) AS c FROM social_outcomes_contract",
+                []
+            )
+            total = cursor.fetchone()[0]
+
+    connection.close()
+    output = "Showing " + str(total) + " references to social outcome contracts in studies."
+    return output, output, output, output
 
 
 @callback(
