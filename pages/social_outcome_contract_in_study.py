@@ -78,11 +78,7 @@ def report1(load_interval):
     #print("1" + str(data))
     df = pandas.DataFrame(data)
     # See https://community.plotly.com/t/inconsistent-callback-error-updating-scatter-plot/46754/8 for the hack for this terrible try / except
-    try:
-        fig = px.bar(df, x="label", y=["present",'absent', 'missing'], color_discrete_sequence=['blue','red','yellow'])
-    except Exception:
-        fig = px.bar(df, x="label", y=["present", 'absent', 'missing'], color_discrete_sequence=['blue', 'red','yellow'])
-    return fig
+    return _get_fig(data)
 
 @callback(
     Output(component_id='report2', component_property='figure'),
@@ -93,12 +89,7 @@ def report2(load_interval):
         ('reports_costs_and_resource_implications','Reports on costs and resource implications - especially transaction costs'),
     ])
     #print("2" + str(data))
-    df = pandas.DataFrame(data)
-    try:
-        fig = px.bar(df, x="label", y=["present",'absent', 'missing'], color_discrete_sequence=['blue','red','yellow'])
-    except Exception:
-        fig = px.bar(df, x="label", y=["present", 'absent', 'missing'], color_discrete_sequence=['blue', 'red','yellow'])
-    return fig
+    return _get_fig(data)
 
 
 @callback(
@@ -110,12 +101,7 @@ def report3(load_interval):
         ('reports_ecosystem_or_system_strengthening_effects','Reports on ecosystem or system strengthening effects - i.e. implications beyond the SOC parties'),
     ])
     #print("3" + str(data))
-    df = pandas.DataFrame(data)
-    try:
-        fig = px.bar(df, x="label", y=["present",'absent', 'missing'], color_discrete_sequence=['blue','red','yellow'])
-    except Exception:
-        fig = px.bar(df, x="label", y=["present", 'absent', 'missing'], color_discrete_sequence=['blue', 'red','yellow'])
-    return fig
+    return _get_fig(data)
 
 
 @callback(
@@ -128,12 +114,7 @@ def report4(load_interval):
         ('reports_long_term_sustainment_and_legacy_effects','Reports on long-term sustainment and \'post-SOC\' legacy effects'),
     ])
     #print("4" + str(data))
-    df = pandas.DataFrame(data)
-    try:
-        fig = px.bar(df, x="label", y=["present",'absent', 'missing'], color_discrete_sequence=['blue','red','yellow'])
-    except Exception:
-        fig = px.bar(df, x="label", y=["present", 'absent', 'missing'], color_discrete_sequence=['blue', 'red','yellow'])
-    return fig
+    return _get_fig(data)
 
 
 
@@ -170,3 +151,31 @@ def _get_report_data(field_and_label_list):
 
     connection.close()
     return data
+
+def _get_fig(data):
+    df = pandas.DataFrame(data)
+    try:
+        fig = px.bar(
+            df,
+            x="label",
+            y=["present", 'absent', 'missing'],
+            color_discrete_sequence=['blue', 'red', 'yellow'],
+            labels={
+                'value': 'Count',
+                'label': '',
+                'variable': 'Data is'
+            }
+        )
+    except Exception:
+        fig = px.bar(
+            df,
+            x="label",
+            y=["present", 'absent', 'missing'],
+            color_discrete_sequence=['blue', 'red', 'yellow'],
+            labels={
+                'value': 'Count',
+                'label': '',
+                'variable': 'Data is'
+            }
+        )
+    return fig
