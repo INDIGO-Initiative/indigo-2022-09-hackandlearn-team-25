@@ -163,7 +163,7 @@ def _get_report_data(field_and_label_list):
             data['absent'].append(cursor.fetchone()[0])
 
             cursor.execute(
-                "SELECT count(*) AS c FROM social_outcomes_contract WHERE NOT ( "+field+" = 'present' OR "+field+" = 'Present' OR "+field+" = 'absent' OR "+field+" = 'Absent')",
+                "SELECT count(*) AS c FROM social_outcomes_contract WHERE NOT ( "+field+" = 'present' OR "+field+" = 'Present' OR "+field+" = 'absent' OR "+field+" = 'Absent') OR "+field+" IS NULL",
                 []
             )
             data['missing'].append(cursor.fetchone()[0])
