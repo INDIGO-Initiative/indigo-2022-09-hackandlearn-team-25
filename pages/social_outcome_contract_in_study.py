@@ -53,9 +53,9 @@ def report1(load_interval):
     df = pandas.DataFrame(data)
     # See https://community.plotly.com/t/inconsistent-callback-error-updating-scatter-plot/46754/8 for the hack for this terrible try / except
     try:
-        fig = px.bar(df, x="label", y=["present",'absent'], color_discrete_sequence=['blue','red'])
+        fig = px.bar(df, x="label", y=["present",'absent', 'missing'], color_discrete_sequence=['blue','red','yellow'])
     except Exception:
-        fig = px.bar(df, x="label", y=["present", 'absent'], color_discrete_sequence=['blue', 'red'])
+        fig = px.bar(df, x="label", y=["present", 'absent', 'missing'], color_discrete_sequence=['blue', 'red','yellow'])
     return fig
 
 @callback(
@@ -69,9 +69,9 @@ def report2(load_interval):
     #print("2" + str(data))
     df = pandas.DataFrame(data)
     try:
-        fig = px.bar(df, x="label", y=["present",'absent'], color_discrete_sequence=['blue','red'])
+        fig = px.bar(df, x="label", y=["present",'absent', 'missing'], color_discrete_sequence=['blue','red','yellow'])
     except Exception:
-        fig = px.bar(df, x="label", y=["present", 'absent'], color_discrete_sequence=['blue', 'red'])
+        fig = px.bar(df, x="label", y=["present", 'absent', 'missing'], color_discrete_sequence=['blue', 'red','yellow'])
     return fig
 
 
@@ -86,9 +86,9 @@ def report3(load_interval):
     #print("3" + str(data))
     df = pandas.DataFrame(data)
     try:
-        fig = px.bar(df, x="label", y=["present",'absent'], color_discrete_sequence=['blue','red'])
+        fig = px.bar(df, x="label", y=["present",'absent', 'missing'], color_discrete_sequence=['blue','red','yellow'])
     except Exception:
-        fig = px.bar(df, x="label", y=["present", 'absent'], color_discrete_sequence=['blue', 'red'])
+        fig = px.bar(df, x="label", y=["present", 'absent', 'missing'], color_discrete_sequence=['blue', 'red','yellow'])
     return fig
 
 
@@ -104,9 +104,9 @@ def report4(load_interval):
     #print("4" + str(data))
     df = pandas.DataFrame(data)
     try:
-        fig = px.bar(df, x="label", y=["present",'absent'], color_discrete_sequence=['blue','red'])
+        fig = px.bar(df, x="label", y=["present",'absent', 'missing'], color_discrete_sequence=['blue','red','yellow'])
     except Exception:
-        fig = px.bar(df, x="label", y=["present", 'absent'], color_discrete_sequence=['blue', 'red'])
+        fig = px.bar(df, x="label", y=["present", 'absent', 'missing'], color_discrete_sequence=['blue', 'red','yellow'])
     return fig
 
 
@@ -116,7 +116,8 @@ def _get_report_data(field_and_label_list):
     data = {
         'label': [],
         'present': [],
-        'absent': []
+        'absent': [],
+        'missing': [],
     }
     with closing(connection.cursor()) as cursor:
         for field, label in field_and_label_list:
@@ -130,10 +131,16 @@ def _get_report_data(field_and_label_list):
             data['present'].append(cursor.fetchone()[0])
 
             cursor.execute(
-                "SELECT count(*) AS c FROM social_outcomes_contract WHERE  NOT("+field+" = 'present' OR "+field+" = 'Present')",
+                "SELECT count(*) AS c FROM social_outcomes_contract WHERE  "+field+" = 'absent' OR "+field+" = 'Absent'",
                 []
             )
             data['absent'].append(cursor.fetchone()[0])
+
+            cursor.execute(
+                "SELECT count(*) AS c FROM social_outcomes_contract WHERE NOT ( "+field+" = 'present' OR "+field+" = 'Present' OR "+field+" = 'absent' OR "+field+" = 'Absent')",
+                []
+            )
+            data['missing'].append(cursor.fetchone()[0])
 
     connection.close()
     return data
