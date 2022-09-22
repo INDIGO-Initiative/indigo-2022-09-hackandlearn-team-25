@@ -112,6 +112,11 @@ possible_indigo_project_confidence REAL
 
 ###################################################################### Open Spreadsheet and insert into database
 
+
+def stripcellvalue(val):
+    return val.strip() if isinstance(val, str) else val
+
+
 workbook = openpyxl.load_workbook('data/research-projects-spreadsheet.xlsx')
 worksheet = workbook['Sheet1']
 
@@ -179,23 +184,23 @@ for row in range(3, worksheet.max_row + 1):
                 worksheet['AF' + str(row)].value,
                 worksheet['AG' + str(row)].value,
                 worksheet['AH' + str(row)].value,
-                worksheet['AI' + str(row)].value,
+                stripcellvalue(worksheet['AI' + str(row)].value),
                 worksheet['AJ' + str(row)].value,
                 worksheet['AK' + str(row)].value,
                 worksheet['AL' + str(row)].value,
-                worksheet['AM' + str(row)].value,
+                stripcellvalue(worksheet['AM' + str(row)].value),
                 worksheet['AN' + str(row)].value,
-                worksheet['AO' + str(row)].value,
+                stripcellvalue(worksheet['AO' + str(row)].value),
                 worksheet['AP' + str(row)].value,
-                worksheet['AQ' + str(row)].value,
+                stripcellvalue(worksheet['AQ' + str(row)].value),
                 worksheet['AR' + str(row)].value,
-                worksheet['AS' + str(row)].value,
+                stripcellvalue(worksheet['AS' + str(row)].value),
                 worksheet['AT' + str(row)].value,
                 worksheet['AU' + str(row)].value,
                 worksheet['AV' + str(row)].value,
-                worksheet['AW' + str(row)].value,
+                stripcellvalue(worksheet['AW' + str(row)].value),
                 worksheet['AX' + str(row)].value,
-                worksheet['AY' + str(row)].value,
+                stripcellvalue(worksheet['AY' + str(row)].value),
                 worksheet['AZ' + str(row)].value,
                 worksheet['BA' + str(row)].value,
                 worksheet['BB' + str(row)].value,
@@ -203,15 +208,15 @@ for row in range(3, worksheet.max_row + 1):
                 worksheet['BD' + str(row)].value,
                 worksheet['BE' + str(row)].value,
                 worksheet['BF' + str(row)].value,
-                worksheet['BG' + str(row)].value,
+                stripcellvalue(worksheet['BG' + str(row)].value),
                 worksheet['BH' + str(row)].value,
                 worksheet['BI' + str(row)].value,
                 worksheet['BJ' + str(row)].value,
-                worksheet['BK' + str(row)].value,
+                stripcellvalue(worksheet['BK' + str(row)].value),
                 worksheet['BL' + str(row)].value,
                 worksheet['BM' + str(row)].value,
                 worksheet['BN' + str(row)].value,
-                worksheet['BO' + str(row)].value,
+                stripcellvalue(worksheet['BO' + str(row)].value),
                 worksheet['BP' + str(row)].value,
                 worksheet['BQ' + str(row)].value,
                 row,
